@@ -1,9 +1,14 @@
 def call() {
-  // Use the credentials ID 'NVD_API_KEY' that you created in Jenkins
-  dependencyCheck(
-    nvdApiKey: credentials('OWASP_Key'), 
-    additionalArguments: '--scan ./', 
-    odcInstallation: 'OWASP'
-  )
+  // 1. Fetch the secret key from Jenkins and store it in the variable 'NVD_KEY'
+  withCredentials([string(credentialsId: 'OWASP_Key', variable: 'NVD_KEY')]) {
+    
+    // 2. Pass the key as a manual argument in the additionalArguments string
+    dependencyCheck(
+      additionalArguments: "--scan ./ --nvdApiKey ${NVD_KEY}", 
+      odcInstallation: 'OWASP'
+    )
+  }
+  
+  // 3. Publish the results
   dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
 }
