@@ -1,8 +1,8 @@
 def call() {
   withCredentials([string(credentialsId: 'OWASP_Key', variable: 'NVD_KEY')]) {
     dependencyCheck(
-      // Using single quotes (') prevents the "interpolation" warning
-      additionalArguments: '--scan ./ --nvdApiKey ' + NVD_KEY, 
+      // Adding --noupdate tells it to use the local data and stop hitting the 503 error
+      additionalArguments: '--scan ./ --nvdApiKey ' + NVD_KEY + ' --noupdate', 
       odcInstallation: 'OWASP'
     )
   }
